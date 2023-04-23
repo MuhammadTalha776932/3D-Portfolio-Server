@@ -9,7 +9,7 @@ const dalleRoute: Router = express.Router();
 // * Config the OpenAI
 
 const config = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: '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',
 })
 
 // * Create the instance of OpenAIApi
@@ -22,22 +22,30 @@ dalleRoute.route('/').get((req: Request, res: Response) => {
 
 dalleRoute.route('/').post(async (req: Request, res: Response) => {
     try {
-        const { prompt } = req.body;
+        const { prompt } = <{ prompt: string }>req.body;
+
+        console.log(`here is prompt message ${prompt}`)
 
         const response = await openai.createImage({
-            prompt,
+            user: 'fuckyou',
+            prompt: "A cute baby",
             n: 1,
             size: '1024x1024',
             response_format: "b64_json"
-        })
+        }, {})
+
+        console.log(response.data.data[0].url);
 
         const image = response.data.data[0].b64_json;
 
-        res.status(200).json({ photo: image });
-    } catch (error) {
-        console.error(error);
+        console.log(`here is the image response from DELL.E  ${image}`)
 
-        res.status(500).json({ message: "Something went wrong" });
+
+        res.status(200).send({ photo: image || "" });
+    } catch (error: any) {
+        console.error(error.response.status);
+
+        res.status(error.response.status).json({ message: error.message });
     }
 })
 

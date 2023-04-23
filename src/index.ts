@@ -16,14 +16,11 @@ app.use(express.json({ limit: '50mb' }));
 
 
 
-const middleware = (req: Request, res: Response, next: NextFunction) => {
-    console.log("Middleware Call Now")
-    next();
-}
+
 
 
 // * handle the default route get request and response
-app.get('/', middleware, (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
     res.status(200).json({ message: "Hello from DALL.E" });
 });
 
